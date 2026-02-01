@@ -115,7 +115,7 @@ function getStepHTML(step) {
             return cardTemplate(
                 images.catCute,
                 "Do you love me? 🥺",
-
+                "",
                 `<button class="yes-btn" onclick="nextStepWithBurst(5)">YES</button>
                  <button class="no-btn" onclick="playMusic(); nextStep(1)">NO</button>`
             );
