@@ -1,0 +1,542 @@
+:root {
+    --bg-color: #ffe6ea;
+    --card-bg: #ffffff;
+    --primary-color: #ff4d6d;
+    --primary-hover: #ff2e55;
+    --secondary-color: #f0f0f0;
+    --secondary-hover: #dcdcdc;
+    --text-color: #4a4a4a;
+    --shadow-color: rgba(255, 77, 109, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Nunito', sans-serif;
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    /* Prevent scrolling during animations */
+}
+
+/* --- Main Card Container --- */
+#app {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    perspective: 1000px;
+    /* For 3D transitions if needed */
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 22px;
+    padding: 30px 20px;
+    box-shadow: 0 10px 40px var(--shadow-color);
+    will-change: transform, opacity;
+    /* Optimization */
+    text-align: center;
+    /* Ensure card serves as positioning context for absolute elements like the prank button */
+    position: relative;
+    overflow: hidden;
+    /* Keeps prank button inside? No, user said NO button moves inside card. */
+}
+
+/* Relax overflow for specific effects if needed, but intended design is clean card */
+
+/* --- Typography --- */
+h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+p.subtext {
+    font-size: 1.1rem;
+    color: #888;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+/* --- Images / GIFs --- */
+.image-container {
+    width: 100%;
+    height: 220px;
+    /* Fixed height to prevent layout shift */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    /* DO NOT shrink or overflow */
+    animation: softZoom 0.5s ease-out;
+}
+
+/* --- Buttons --- */
+.btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+button {
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    font-family: 'Nunito', sans-serif;
+    position: relative;
+    overflow: hidden;
+    /* For any internal shine effects if added, but mainly clean edges */
+}
+
+button.yes-btn {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+}
+
+button.no-btn {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+button:hover {
+    transform: translateY(-2px) scale(1.02);
+    filter: brightness(1.05);
+}
+
+button.yes-btn:hover {
+    box-shadow: 0 8px 25px rgba(255, 77, 109, 0.5);
+    /* Soft pink glow */
+}
+
+button.no-btn:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    /* Soft dark glow */
+    background-color: var(--secondary-hover);
+}
+
+button:active {
+    transform: translateY(1px) scale(0.95);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.1s ease;
+}
+
+/* --- Prank Button Styling --- */
+button.prank-btn {
+    position: absolute;
+    transition: top 0.1s, left 0.1s;
+    /* Fast movement */
+    z-index: 10;
+}
+
+
+
+/* --- Animations --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+@keyframes softZoom {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Slide Up & Fade In */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+        /* Slide upward slightly */
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Class to trigger page enter animation */
+.page-enter {
+    animation: fadeIn 0.5s forwards;
+}
+
+.card.page-enter {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Staggered text animations */
+.anim-text {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.anim-delay-1 {
+    animation-delay: 0.3s;
+}
+
+.anim-delay-2 {
+    animation-delay: 0.6s;
+}
+
+/* Class to trigger page exit animation */
+.page-exit {
+    animation: fadeOut 0.3s forwards;
+}
+
+/* Fix for elements with both entry animation and heartbeat */
+.anim-text.heartbeat {
+    animation: fadeInUp 0.8s ease-out forwards, heartbeat 2s infinite ease-in-out 0.8s;
+    opacity: 0;
+    /* Ensure it starts hidden for fadeInUp */
+}
+
+/* --- Step 7: Option Cards --- */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.option-card {
+    background: linear-gradient(135deg, #fff0f5 0%, #ffe6ea 100%);
+    padding: 20px;
+    border-radius: 20px;
+    /* More rounded */
+    font-weight: 800;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: 2px solid transparent;
+    box-shadow: 0 4px 10px rgba(255, 77, 109, 0.1);
+    font-size: 1.1rem;
+    /* Improved text size */
+    opacity: 0.95;
+}
+
+.option-card:hover {
+    transform: translateY(-5px);
+    /* Hover lift */
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 20px rgba(255, 77, 109, 0.25);
+    /* Glow border effect */
+    background: white;
+}
+
+/* --- Step 8: Multi-lang Cards --- */
+.message-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-top: 20px;
+    min-height: 200px;
+}
+
+.love-card {
+    background: white;
+    padding: 15px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.5s ease;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.love-card.visible {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* --- Step 9: Final Letter --- */
+.letter-content {
+    text-align: left;
+    background-image: linear-gradient(#ffe6ea 1px, transparent 1px);
+    background-size: 100% 24px;
+    line-height: 24px;
+    padding: 10px;
+    color: var(--text-color);
+    font-family: 'Courier New', Courier, monospace;
+    /* Handwritten feel */
+    font-weight: 600;
+}
+
+/* --- Animations: Heartbeat --- */
+@keyframes heartbeat {
+    0% {
+        transform: scale(1);
+    }
+
+    15% {
+        transform: scale(1.05);
+    }
+
+    30% {
+        transform: scale(1);
+    }
+
+    45% {
+        transform: scale(1.05);
+    }
+
+    60% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* New Gentle Pulse for extended reading */
+@keyframes softPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+
+    50% {
+        transform: scale(1.02);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+}
+
+/* Sparkle/Glow Effect */
+@keyframes sparkleGlow {
+    0% {
+        text-shadow: 0 0 5px rgba(255, 77, 109, 0.2);
+    }
+
+    50% {
+        text-shadow: 0 0 15px rgba(255, 77, 109, 0.6), 0 0 30px rgba(255, 77, 109, 0.4);
+    }
+
+    100% {
+        text-shadow: 0 0 5px rgba(255, 77, 109, 0.2);
+    }
+}
+
+.heartbeat {
+    animation: heartbeat 2s infinite ease-in-out;
+    display: inline-block;
+}
+
+.gentle-pulse {
+    animation: softPulse 3s infinite ease-in-out;
+    display: inline-block;
+}
+
+.text-sparkle {
+    animation: sparkleGlow 3s infinite ease-in-out;
+    color: var(--primary-color);
+    /* Ensure consistent color for glow */
+}
+
+/* --- Card Glow Effect --- */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 22px;
+    padding: 30px 20px;
+    box-shadow: 0 10px 40px var(--shadow-color);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    /* Important for burst containment if inside, but we might want burst outside. Let's keep overflow hidden for the shimmer/prank btn mostly. Burst will be fixed/absolute to body. */
+
+    /* Shimmer Border/Glow effect */
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Optional: Pseudo-element for "moving glow" if desired, but box-shadow is cleaner for performance */
+.card::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(to right,
+            transparent,
+            rgba(255, 255, 255, 0.4),
+            transparent);
+    transform: rotate(30deg);
+    animation: shimmer 6s infinite linear;
+    pointer-events: none;
+    opacity: 0.3;
+}
+
+/* --- Heart Burst Particles --- */
+.burst-heart {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 1.5rem;
+    pointer-events: none;
+    animation: flyOut 1s ease-out forwards;
+    z-index: 1000;
+    /* Above everything */
+}
+
+@keyframes flyOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.5);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(1.5);
+    }
+}
+
+/* --- Floating Hearts Enhanced --- */
+.floating-hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.heart {
+    position: absolute;
+    bottom: -10vh;
+    font-size: 2rem;
+    color: var(--primary-color);
+    opacity: 0.6;
+    animation: floatUp 10s linear infinite;
+    /* Soft blur for depth */
+    filter: blur(0.5px);
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-120vh) rotate(360deg) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* --- Mobile Upgrades --- */
+@media (max-width: 480px) {
+    .btn-group {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+
+    button {
+        width: 100%;
+        padding: 16px 20px;
+        /* Larger tap area */
+        font-size: 1.1rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    .image-container {
+        height: 180px;
+        /* Adjust for smaller screens */
+    }
+}
+
+body {
+    background: linear-gradient(-45deg,
+            #ffe6ea,
+            #ffd6e0,
+            #fff0f5,
+            #ffe6ea);
+    background-size: 400% 400%;
+    animation: bgMove 12s ease infinite;
+}
+
+@keyframes bgMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
